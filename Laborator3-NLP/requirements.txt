@@ -1,0 +1,6 @@
+```txt
+pandas
+nltk
+spacy
+scikit-learn
+sklearn-crfsuite
