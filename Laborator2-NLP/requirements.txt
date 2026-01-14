@@ -1,0 +1,14 @@
+<<<<<<< HEAD
+pandas
+numpy
+spacy
+gensim
+scikit-learn
+=======
+```txt
+pandas
+nltk
+spacy
+scikit-learn
+sklearn-crfsuite
+>>>>>>> 997eb0f62ebb7003218ba1b58a8a12602855a8ef
