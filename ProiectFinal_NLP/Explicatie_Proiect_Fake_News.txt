@@ -1,0 +1,116 @@
+					PROIECT:
+
+	DETECTAREA STIRILOR FALSE FOLOSIND NAIVE BAYES SI LSTM + ATTENTION
+
+				 1. DESCRIERE GENERALA
+	Acest proiect are ca scop
+clasificarea articolelor de ștstiri in doua clase: - REAL (0) - FAKE (1)
+
+	Sunt implementate doua modele: 1) Un model clasic de Machine Learning:
+TF-IDF + Naive Bayes 2) Un model Deep Learning: LSTM bidirecțional cu
+mecanism de Attention
+
+				2. PREPROCESAREA TEXTULUI
+	Textul este curatat prin: -
+transformare in litere mici - eliminarea URL-urilor si tagurilor HTML -
+eliminarea caracterelor non-alfabetice - eliminarea stopword-urilor -
+lematizare (forma de baza a cuvintelor)
+
+Exemplu: Text original: “The governments are running quickly!”
+
+Text procesat: “government run quickly”
+
+				3. MODEL 1 – NAIVE BAYES
+
+	Reprezentarea textului – TF-IDF Textul este transformat in vectori
+numerici folosind TF-IDF cu: - unigrame si bigrame - max 50.000 de
+features - eliminarea cuvintelor foarte frecvente si foarte rare
+
+TF-IDF masoara importanta unui cuvant intr-un document raportat la
+intregul corpus.
+
+	Naive Bayes personalizat Modelul calculeaza: - probabilitatea
+fiecarei clase P(clasa) - probabilitatea fiecarui cuvant conditionat de
+clasa P(cuvant | clasa)
+
+Formula utilizata: log(P(clasa)) + suma log(P(cuvant | clasa))
+
+Este utilizat smoothing Laplace (alpha) pentru a evita probabilitati
+zero. Alegerea hiperparametrului alpha Sunt testate mai multe valori
+pentru alpha pe setul de validare. Este selectat modelul cu cel mai bun
+scor Macro-F1.
+
+				4. MODEL 2 – LSTM + ATTENTION
+
+	Construirea vocabularului se folosesc doar datele de antrenare,
+se pastreaza cele mai frecvente 10.000 de cuvinte fiecărui cuvant i se
+atribuie un ID numeric ID-ul 0 este rezervat pentru padding și cuvinte
+necunoscute.
+	Text-secventa numerica fiecare articol este transformat intr-o
+secventa de lungime fixa (100): textele mai lungi sunt trunchiate
+textele mai scurte sunt completate cu zerouri.
+	Attention permite modelului sa acorde importanta diferita fiecarui
+cuvant din text.
+	Antrenare functie de pierdere: CrossEntropyLoss - Optimizator:
+Adam - Early stopping bazat pe loss-ul de validare.
+
+				5. SETURI DE DATE
+	Datele sunt impartite astfel: 70% antrenare, 15% validare, 15% test.
+Aceasta separare previne supra-invatarea si ofera o evaluare corecta a
+performantei.
+
+				6. EVALUARE SI REZULTATE
+	Modelele sunt evaluate
+folosind: - Precision - Recall - F1-score (macro) - ROC-AUC - PR-AUC -
+Matricea de confuzie
+
+Naive Bayes: - performanta buna - timp de antrenare foarte mic -
+interpretabilitate ridicata
+
+LSTM + Attention: - performanta superioara - capabil sa surprinda
+contextul si ordinea cuvintelor - mai costisitor computational
+
+				7. CONCLUZII
+	Priectul demonstreaza dferențele dintre metodele clasice de Machine Learning si modelele
+moderne de Deep Learning in preprocesarea limbajului natural.
+
+Separarea corecta a datelor si utilizarea setului de validare sigura
+rezultate relevante si corecte din punct de vedere stintific.
+
+				8. REZULTATE OBTINUTE
+NB alpha=0.5 | Macro-F1=0.9437
+NB alpha=1.0 | Macro-F1=0.9417
+NB alpha=2.0 | Macro-F1=0.9397
+
+===== Custom Naive Bayes Results =====
+              precision    recall  f1-score   support
+
+           0     0.9471    0.9480    0.9476      3212
+           1     0.9511    0.9502    0.9506      3415
+
+    accuracy                         0.9491      6627
+   macro avg     0.9491    0.9491    0.9491      6627
+weighted avg     0.9491    0.9491    0.9491      6627
+
+Macro-F1: 0.9491
+ROC-AUC: 0.6008
+PR-AUC : 0.6059
+Epoch 1 | Train=63.4051 | Val=1.7775
+Epoch 2 | Train=5.5347 | Val=1.2446
+Epoch 3 | Train=3.1157 | Val=1.3330
+Epoch 4 | Train=2.1869 | Val=1.7342
+Early stopping triggered
+
+===== LSTM Results =====
+              precision    recall  f1-score   support
+
+           0     0.9988    0.9969    0.9978      3212
+           1     0.9971    0.9988    0.9980      3415
+
+    accuracy                         0.9979      6627
+   macro avg     0.9979    0.9979    0.9979      6627
+weighted avg     0.9979    0.9979    0.9979      6627
+
+Macro-F1: 0.9979
+ROC-AUC: 0.9999
+PR-AUC : 0.9999  
